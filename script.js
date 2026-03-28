@@ -1,6 +1,7 @@
 const HERO_IMAGE_SRC = "./assets/foto-topo.jpg";
 const ABOUT_IMAGE_SRC = "./assets/cliente-principal.jpg";
 const FALLBACK_IMAGE_SRC = "./assets/cliente-principal.svg";
+
 const GALLERY_CONFIG = {
   enabled: false,
   autoShowIfHasImages: true,
@@ -20,47 +21,19 @@ const GALLERY_CONFIG = {
   ]
 };
 
+const GOOGLE_REVIEWS_CONFIG = {
+  enabled: false,
+  endpoint: "/api/reviews.php",
+  minStars: 4,
+  maxReviews: 5,
+  languageCode: "pt-BR",
+  placeId: ""
+};
+
 const heroImage = document.querySelector("[data-hero-image]");
-const yearTarget = document.querySelector("[data-current-year]");
-
-if (yearTarget) {
-  yearTarget.textContent = String(new Date().getFullYear());
-}
-
-if (heroImage) {
-  heroImage.src = HERO_IMAGE_SRC;
-  heroImage.addEventListener("error", () => {
-    heroImage.src = FALLBACK_IMAGE_SRC;
-  });
-}
-
 const aboutImage = document.querySelector("[data-about-image]");
-if (aboutImage) {
-  aboutImage.src = ABOUT_IMAGE_SRC;
-  aboutImage.addEventListener("error", () => {
-    aboutImage.src = FALLBACK_IMAGE_SRC;
-  });
-}
-
+const yearTarget = document.querySelector("[data-current-year]");
 const revealElements = document.querySelectorAll(".reveal");
-
-if ("IntersectionObserver" in window) {
-  const observer = new IntersectionObserver(
-    (entries) => {
-      entries.forEach((entry) => {
-        if (entry.isIntersecting) {
-          entry.target.classList.add("is-visible");
-          observer.unobserve(entry.target);
-        }
-      });
-    },
-    { threshold: 0.15 }
-  );
-
-  revealElements.forEach((element) => observer.observe(element));
-} else {
-  revealElements.forEach((element) => element.classList.add("is-visible"));
-}
 
 const gallerySection = document.querySelector("[data-gallery-section]");
 const galleryGrid = document.querySelector("[data-gallery-grid]");
@@ -70,6 +43,47 @@ const galleryModalTitle = document.querySelector("[data-gallery-modal-title]");
 const galleryModalComment = document.querySelector("[data-gallery-modal-comment]");
 const galleryCloseTargets = document.querySelectorAll("[data-gallery-close]");
 
+function escapeHtml(value) {
+  return String(value)
+    .replaceAll("&", "&amp;")
+    .replaceAll("<", "&lt;")
+    .replaceAll(">", "&gt;")
+    .replaceAll("\"", "&quot;")
+    .replaceAll("'", "&#039;");
+}
+
+function buildStars(rating) {
+  const rounded = Math.max(1, Math.min(5, Math.round(rating || 0)));
+  return "★".repeat(rounded);
+}
+
+function setImageWithFallback(element, src) {
+  if (!element) return;
+  element.src = src;
+  element.addEventListener("error", () => {
+    element.src = FALLBACK_IMAGE_SRC;
+  });
+}
+
+function revealOnScroll() {
+  if ("IntersectionObserver" in window) {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add("is-visible");
+            observer.unobserve(entry.target);
+          }
+        });
+      },
+      { threshold: 0.15 }
+    );
+    revealElements.forEach((element) => observer.observe(element));
+  } else {
+    revealElements.forEach((element) => element.classList.add("is-visible"));
+  }
+}
+
 function validateImage(src) {
   return new Promise((resolve) => {
     const image = new Image();
@@ -77,6 +91,23 @@ function validateImage(src) {
     image.onerror = () => resolve(null);
     image.src = src;
   });
+}
+
+function openGalleryModal(button) {
+  if (!galleryModal || !galleryModalImage || !galleryModalTitle || !galleryModalComment) return;
+  galleryModalImage.src = button.dataset.gallerySrc ?? "";
+  galleryModalImage.alt = button.dataset.galleryTitle ?? "Foto ampliada do trabalho espiritual";
+  galleryModalTitle.textContent = button.dataset.galleryTitle ?? "Trabalho Espiritual";
+  galleryModalComment.textContent = button.dataset.galleryComment ?? "";
+  galleryModal.hidden = false;
+  document.body.style.overflow = "hidden";
+}
+
+function closeGalleryModal() {
+  if (!galleryModal || !galleryModalImage) return;
+  galleryModal.hidden = true;
+  galleryModalImage.src = "";
+  document.body.style.overflow = "";
 }
 
 async function initGallery() {
@@ -113,15 +144,15 @@ async function initGallery() {
             class="gallery__open"
             data-gallery-open
             data-gallery-src="${item.src}"
-            data-gallery-title="${item.title}"
-            data-gallery-comment="${item.comment}"
+            data-gallery-title="${escapeHtml(item.title)}"
+            data-gallery-comment="${escapeHtml(item.comment)}"
             aria-label="Expandir foto ${index + 1} da galeria"
           >
-            <img class="gallery__image" src="${item.src}" alt="${item.title}" loading="lazy" />
+            <img class="gallery__image" src="${item.src}" alt="${escapeHtml(item.title)}" loading="lazy" />
           </button>
           <figcaption class="gallery__caption">
-            <p class="gallery__work-title">${item.title}</p>
-            <p class="gallery__comment">${item.comment}</p>
+            <p class="gallery__work-title">${escapeHtml(item.title)}</p>
+            <p class="gallery__comment">${escapeHtml(item.comment)}</p>
           </figcaption>
         </figure>
       `
@@ -132,43 +163,79 @@ async function initGallery() {
   gallerySection.hidden = false;
 
   galleryGrid.querySelectorAll("[data-gallery-open]").forEach((button) => {
-    button.addEventListener("click", () => {
-      if (!galleryModal || !galleryModalImage || !galleryModalTitle || !galleryModalComment) return;
-      galleryModalImage.src = button.dataset.gallerySrc ?? "";
-      galleryModalImage.alt = button.dataset.galleryTitle ?? "Foto ampliada do trabalho espiritual";
-      galleryModalTitle.textContent = button.dataset.galleryTitle ?? "Trabalho Espiritual";
-      galleryModalComment.textContent = button.dataset.galleryComment ?? "";
-      galleryModal.hidden = false;
-      document.body.style.overflow = "hidden";
-    });
+    button.addEventListener("click", () => openGalleryModal(button));
   });
 }
 
-void initGallery();
+async function tryLoadGoogleReviews() {
+  if (!GOOGLE_REVIEWS_CONFIG.enabled) return;
+  const endpointUrl = new URL(
+    GOOGLE_REVIEWS_CONFIG.endpoint,
+    window.location.origin
+  );
+  endpointUrl.searchParams.set("minStars", String(GOOGLE_REVIEWS_CONFIG.minStars));
+  endpointUrl.searchParams.set("maxReviews", String(GOOGLE_REVIEWS_CONFIG.maxReviews));
+  endpointUrl.searchParams.set("languageCode", GOOGLE_REVIEWS_CONFIG.languageCode);
+  if (GOOGLE_REVIEWS_CONFIG.placeId) {
+    endpointUrl.searchParams.set("placeId", GOOGLE_REVIEWS_CONFIG.placeId);
+  }
 
-function closeGalleryModal() {
-  if (!galleryModal || !galleryModalImage) return;
-  galleryModal.hidden = true;
-  galleryModalImage.src = "";
-  document.body.style.overflow = "";
+  const response = await fetch(endpointUrl.toString(), { method: "GET" });
+
+  if (!response.ok) {
+    throw new Error(`Reviews endpoint error: ${response.status}`);
+  }
+
+  const payload = await response.json();
+  const reviews = (payload.reviews || [])
+    .map((review) => ({
+      rating: Number(review.rating || 0),
+      text: review?.text?.text || ""
+    }))
+    .filter(
+      (review) =>
+        review.text &&
+        review.rating >= GOOGLE_REVIEWS_CONFIG.minStars
+    )
+    .slice(0, GOOGLE_REVIEWS_CONFIG.maxReviews);
+
+  if (reviews.length === 0) return;
+
+  const track = document.querySelector("[data-testimonials-track]");
+  const meta = document.querySelector("[data-google-reviews-meta]");
+  if (!track) return;
+
+  track.innerHTML = reviews
+    .map(
+      (review, index) => `
+        <article class="testimonial-slide ${index === 0 ? "is-active" : ""}" data-slide>
+          <p class="testimonial-slide__quote">“${escapeHtml(review.text)}”</p>
+          <p class="testimonial-slide__stars" aria-label="Avaliação ${review.rating} estrelas">
+            ${buildStars(review.rating)}
+          </p>
+        </article>
+      `
+    )
+    .join("");
+
+  if (meta) {
+    meta.hidden = false;
+    const rating = Number(payload.rating || 0);
+    const ratingText = Number.isFinite(rating) ? rating.toFixed(1).replace(".", ",") : "-";
+    meta.textContent = `Avaliações reais do Google • Nota ${ratingText} (${Number(payload.userRatingCount || 0)} avaliações)`;
+  }
 }
 
-galleryCloseTargets.forEach((element) => {
-  element.addEventListener("click", closeGalleryModal);
-});
+function initTestimonialsSlider() {
+  const slider = document.querySelector("[data-testimonials-slider]");
+  if (!slider) return;
 
-document.addEventListener("keydown", (event) => {
-  if (event.key === "Escape" && galleryModal && !galleryModal.hidden) {
-    closeGalleryModal();
-  }
-});
-
-const slider = document.querySelector("[data-testimonials-slider]");
-if (slider) {
   const slides = Array.from(slider.querySelectorAll("[data-slide]"));
   const prevBtn = slider.querySelector("[data-slide-prev]");
   const nextBtn = slider.querySelector("[data-slide-next]");
   const dotsWrap = slider.querySelector("[data-slide-dots]");
+  if (slides.length === 0 || !dotsWrap) return;
+
   const SWIPE_THRESHOLD = 36;
   let currentIndex = 0;
   let autoplayTimer;
@@ -176,6 +243,7 @@ if (slider) {
   let touchStartY = 0;
   let isTouchTracking = false;
 
+  dotsWrap.innerHTML = "";
   const dots = slides.map((_, index) => {
     const dot = document.createElement("button");
     dot.type = "button";
@@ -206,9 +274,7 @@ if (slider) {
   }
 
   function stopAutoplay() {
-    if (autoplayTimer) {
-      window.clearInterval(autoplayTimer);
-    }
+    if (autoplayTimer) window.clearInterval(autoplayTimer);
   }
 
   prevBtn?.addEventListener("click", () => {
@@ -248,11 +314,8 @@ if (slider) {
       const isHorizontalSwipe = Math.abs(deltaX) > Math.abs(deltaY);
 
       if (isHorizontalSwipe && Math.abs(deltaX) > SWIPE_THRESHOLD) {
-        if (deltaX < 0) {
-          showSlide(currentIndex + 1);
-        } else {
-          showSlide(currentIndex - 1);
-        }
+        if (deltaX < 0) showSlide(currentIndex + 1);
+        else showSlide(currentIndex - 1);
       }
 
       isTouchTracking = false;
@@ -273,3 +336,35 @@ if (slider) {
   showSlide(0);
   startAutoplay();
 }
+
+async function bootstrap() {
+  if (yearTarget) {
+    yearTarget.textContent = String(new Date().getFullYear());
+  }
+
+  setImageWithFallback(heroImage, HERO_IMAGE_SRC);
+  setImageWithFallback(aboutImage, ABOUT_IMAGE_SRC);
+  revealOnScroll();
+
+  await initGallery();
+
+  galleryCloseTargets.forEach((element) => {
+    element.addEventListener("click", closeGalleryModal);
+  });
+
+  document.addEventListener("keydown", (event) => {
+    if (event.key === "Escape" && galleryModal && !galleryModal.hidden) {
+      closeGalleryModal();
+    }
+  });
+
+  try {
+    await tryLoadGoogleReviews();
+  } catch (error) {
+    console.warn("Não foi possível carregar avaliações do Google.", error);
+  } finally {
+    initTestimonialsSlider();
+  }
+}
+
+void bootstrap();

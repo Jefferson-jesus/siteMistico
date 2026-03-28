@@ -444,6 +444,14 @@ a {
   touch-action: pan-y;
 }
 
+.testimonials-source {
+  margin: -0.2rem 0 0.6rem;
+  text-align: center;
+  color: #3a4e75;
+  font-size: 0.64rem;
+  letter-spacing: 0.04em;
+}
+
 .testimonials-track {
   min-height: 116px;
 }
@@ -740,6 +748,11 @@ a {
 
   .testimonial-slide__quote {
     font-size: 0.98rem;
+  }
+
+  .testimonials-source {
+    font-size: 0.78rem;
+    margin-bottom: 0.8rem;
   }
 
   .cta-final__box {
