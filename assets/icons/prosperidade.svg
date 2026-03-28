@@ -1,0 +1,20 @@
+﻿<svg xmlns="http://www.w3.org/2000/svg" width="96" height="96" viewBox="0 0 96 96" role="img" aria-labelledby="t">
+  <title id="t">Icone prosperidade</title>
+  <defs>
+    <linearGradient id="coin" x1="0" x2="1" y1="0" y2="1">
+      <stop offset="0%" stop-color="#ffe089"/>
+      <stop offset="55%" stop-color="#f2b21f"/>
+      <stop offset="100%" stop-color="#cf8607"/>
+    </linearGradient>
+  </defs>
+  <ellipse cx="48" cy="66" rx="30" ry="8" fill="#d99610" opacity=".35"/>
+  <ellipse cx="36" cy="56" rx="14" ry="6" fill="url(#coin)"/>
+  <ellipse cx="36" cy="53" rx="14" ry="6" fill="#ffd979"/>
+  <ellipse cx="60" cy="58" rx="14" ry="6" fill="url(#coin)"/>
+  <ellipse cx="60" cy="55" rx="14" ry="6" fill="#ffd979"/>
+  <ellipse cx="48" cy="46" rx="15" ry="6.5" fill="url(#coin)"/>
+  <ellipse cx="48" cy="43" rx="15" ry="6.5" fill="#ffe59b"/>
+  <path d="M47 22c5 2 8 5 8 9-6 2-10 0-13-5 1-2 3-4 5-4z" fill="#7cb342"/>
+  <path d="M51 20c5.5 0 10.1 2.8 13 7-3.8 2-8.7 2.1-12.7.2-2-2.1-1.8-5-.3-7.2z" fill="#8fd14f"/>
+  <path d="M48 29v16" stroke="#80b53f" stroke-width="2.4" stroke-linecap="round"/>
+</svg>

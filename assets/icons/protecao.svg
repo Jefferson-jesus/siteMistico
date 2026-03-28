@@ -1,0 +1,17 @@
+﻿<svg xmlns="http://www.w3.org/2000/svg" width="96" height="96" viewBox="0 0 96 96" role="img" aria-labelledby="t">
+  <title id="t">Ícone proteção</title>
+  <defs>
+    <linearGradient id="rim" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#f6d685"/>
+      <stop offset="100%" stop-color="#b98010"/>
+    </linearGradient>
+    <linearGradient id="core" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#4d73cf"/>
+      <stop offset="100%" stop-color="#143b93"/>
+    </linearGradient>
+  </defs>
+  <path d="M48 14l28 10v20c0 19-10.6 29.2-28 38C30.6 73.2 20 63 20 44V24l28-10z" fill="url(#rim)"/>
+  <path d="M48 19l23 8v17.5c0 15.5-8.6 24-23 31.5-14.4-7.5-23-16-23-31.5V27l23-8z" fill="url(#core)"/>
+  <path d="M48 24v49" stroke="#7ea0e8" stroke-width="1.8" opacity=".7"/>
+  <path d="M25 46h46" stroke="#7ea0e8" stroke-width="1.6" opacity=".55"/>
+</svg>
