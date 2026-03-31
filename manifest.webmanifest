@@ -1,0 +1,19 @@
+﻿{
+  "name": "Tata Roxiluanda - Orientação Espiritual",
+  "short_name": "Tata Roxiluanda",
+  "description": "Consulta espiritual e trabalhos espirituais em São Paulo com Maurício, Tata Roxiluanda.",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "background_color": "#f2f4f8",
+  "theme_color": "#153a8d",
+  "lang": "pt-BR",
+  "icons": [
+    {
+      "src": "/assets/favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    }
+  ]
+}

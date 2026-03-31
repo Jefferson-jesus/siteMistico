@@ -1,6 +1,7 @@
-const HERO_IMAGE_SRC = "./assets/foto-topo.jpg";
-const ABOUT_IMAGE_SRC = "./assets/cliente-principal.jpg";
-const FALLBACK_IMAGE_SRC = "./assets/cliente-principal.svg";
+﻿const HERO_IMAGE_SRC = "./assets/mauricio-orientacao-espiritual-sao-paulo.webp";
+const ABOUT_IMAGE_SRC = "./assets/consulta-espiritual-sao-paulo.webp";
+const HERO_FALLBACK_SRC = "./assets/foto-topo.jpg";
+const ABOUT_FALLBACK_SRC = "./assets/cliente-principal.jpg";
 
 const GALLERY_CONFIG = {
   enabled: false,
@@ -48,7 +49,7 @@ function escapeHtml(value) {
     .replaceAll("&", "&amp;")
     .replaceAll("<", "&lt;")
     .replaceAll(">", "&gt;")
-    .replaceAll("\"", "&quot;")
+    .replaceAll('"', "&quot;")
     .replaceAll("'", "&#039;");
 }
 
@@ -57,11 +58,11 @@ function buildStars(rating) {
   return "★".repeat(rounded);
 }
 
-function setImageWithFallback(element, src) {
+function setImageWithFallback(element, src, fallbackSrc) {
   if (!element) return;
   element.src = src;
   element.addEventListener("error", () => {
-    element.src = FALLBACK_IMAGE_SRC;
+    element.src = fallbackSrc;
   });
 }
 
@@ -126,9 +127,7 @@ async function initGallery() {
     }
   }
 
-  const shouldShow =
-    GALLERY_CONFIG.enabled ||
-    (GALLERY_CONFIG.autoShowIfHasImages && validItems.length > 0);
+  const shouldShow = GALLERY_CONFIG.enabled || (GALLERY_CONFIG.autoShowIfHasImages && validItems.length > 0);
 
   if (!shouldShow || validItems.length === 0) {
     gallerySection.hidden = true;
@@ -169,10 +168,7 @@ async function initGallery() {
 
 async function tryLoadGoogleReviews() {
   if (!GOOGLE_REVIEWS_CONFIG.enabled) return;
-  const endpointUrl = new URL(
-    GOOGLE_REVIEWS_CONFIG.endpoint,
-    window.location.origin
-  );
+  const endpointUrl = new URL(GOOGLE_REVIEWS_CONFIG.endpoint, window.location.origin);
   endpointUrl.searchParams.set("minStars", String(GOOGLE_REVIEWS_CONFIG.minStars));
   endpointUrl.searchParams.set("maxReviews", String(GOOGLE_REVIEWS_CONFIG.maxReviews));
   endpointUrl.searchParams.set("languageCode", GOOGLE_REVIEWS_CONFIG.languageCode);
@@ -192,11 +188,7 @@ async function tryLoadGoogleReviews() {
       rating: Number(review.rating || 0),
       text: review?.text?.text || ""
     }))
-    .filter(
-      (review) =>
-        review.text &&
-        review.rating >= GOOGLE_REVIEWS_CONFIG.minStars
-    )
+    .filter((review) => review.text && review.rating >= GOOGLE_REVIEWS_CONFIG.minStars)
     .slice(0, GOOGLE_REVIEWS_CONFIG.maxReviews);
 
   if (reviews.length === 0) return;
@@ -342,8 +334,8 @@ async function bootstrap() {
     yearTarget.textContent = String(new Date().getFullYear());
   }
 
-  setImageWithFallback(heroImage, HERO_IMAGE_SRC);
-  setImageWithFallback(aboutImage, ABOUT_IMAGE_SRC);
+  setImageWithFallback(heroImage, HERO_IMAGE_SRC, HERO_FALLBACK_SRC);
+  setImageWithFallback(aboutImage, ABOUT_IMAGE_SRC, ABOUT_FALLBACK_SRC);
   revealOnScroll();
 
   await initGallery();
@@ -361,10 +353,14 @@ async function bootstrap() {
   try {
     await tryLoadGoogleReviews();
   } catch (error) {
-    console.warn("Não foi possível carregar avaliações do Google.", error);
+    console.warn("Nao foi possivel carregar avaliacoes do Google.", error);
   } finally {
     initTestimonialsSlider();
   }
 }
 
 void bootstrap();
+
+
+
+

@@ -1,0 +1,54 @@
+﻿{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "Como funciona a consulta espiritual?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "O atendimento começa pelo WhatsApp para entender sua necessidade e realizar o agendamento. Na consulta espiritual, você recebe uma orientação individual com foco no seu momento de vida."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "O atendimento é presencial ou online?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Existem opções de atendimento presencial em São Paulo e orientação online, de acordo com a necessidade e disponibilidade de cada pessoa."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Em quais situações a orientação espiritual pode ajudar?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "A orientação espiritual pode ajudar em questões afetivas, profissionais, familiares e emocionais, trazendo mais clareza para decisões importantes."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Os trabalhos espirituais são personalizados?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Sim. Cada atendimento considera o contexto individual da pessoa, com abordagem responsável e sem promessas irreais."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Onde fica o atendimento em São Paulo?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "O atendimento espiritual fica na Vila das Mercês, em São Paulo - SP, com endereço completo informado no site."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Como entrar em contato?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Você pode entrar em contato pelo WhatsApp no número (11) 97062-2580 para tirar dúvidas e agendar seu atendimento."
+      }
+    }
+  ]
+}
